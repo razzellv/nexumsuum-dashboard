@@ -1,0 +1,6 @@
+{
+  "boiler_efficiency": [88, 89, 91, 87, 92],
+  "chiller_efficiency": [78, 80, 79, 77, 81],
+  "monthly_savings": [400, 500, 600, 550, 700],
+  "labels": ["Apr", "May", "Jun", "Jul", "Aug"]
+}
