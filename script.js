@@ -1,40 +1,70 @@
-const API = window.NEXUM_CONFIG.API_BASE_URL;
+const API = window.NEXUM_CONFIG?.API_BASE_URL;
 
+if (!API) {
+  alert("API_BASE_URL missing. config.js not loaded.");
+}
+
+/**
+ * Helper to safely create a chart
+ */
+function renderChart(canvasId, label, values, labels) {
+  const el = document.getElementById(canvasId);
+  if (!el) return;
+
+  new Chart(el, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label,
+        data: values,
+        borderWidth: 2,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true }
+      }
+    }
+  });
+}
+
+/**
+ * Fetch metrics from backend
+ */
 fetch(`${API}/metrics`)
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`API error ${res.status}`);
+    }
+    return res.json();
+  })
   .then(data => {
     const labels = data.labels || [];
 
-    new Chart(document.getElementById('boilerChart'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Boiler Efficiency (%)',
-          data: data.boiler_efficiency || [],
-          borderWidth: 2
-        }]
-      }
-    });
+    renderChart(
+      "boilerChart",
+      "Boiler Efficiency (%)",
+      data.boiler_efficiency || [],
+      labels
+    );
 
-    new Chart(document.getElementById('chillerChart'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Chiller Efficiency (%)',
-          data: data.chiller_efficiency || [],
-          borderWidth: 2
-        }]
-      }
-    });
+    renderChart(
+      "chillerChart",
+      "Chiller Efficiency (%)",
+      data.chiller_efficiency || [],
+      labels
+    );
 
     document.getElementById("dailySavings").textContent =
-      data.daily_savings?.toFixed(2) || "0.00";
+      (data.daily_savings ?? 0).toFixed(2);
 
     document.getElementById("monthlySavings").textContent =
-      data.monthly_savings_total?.toFixed(2) || "0.00";
+      (data.monthly_savings_total ?? 0).toFixed(2);
   })
   .catch(err => {
-    console.error("Metrics fetch failed:", err);
+    alert("Metrics failed to load. Check API or auth.");
+    console.error(err);
   });
