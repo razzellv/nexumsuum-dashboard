@@ -1,67 +1,40 @@
-import { apiFetch } from "./lib/apiClient.js";
+const API = window.NEXUM_CONFIG.API_BASE_URL;
 
-let boilerChart, chillerChart, savingsChart;
+fetch(`${API}/metrics`)
+  .then(res => res.json())
+  .then(data => {
+    const labels = data.labels || [];
 
-async function loadDashboard() {
-  const data = await apiFetch("/metrics");
+    new Chart(document.getElementById('boilerChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Boiler Efficiency (%)',
+          data: data.boiler_efficiency || [],
+          borderWidth: 2
+        }]
+      }
+    });
 
-  // ===== KPIs =====
-  document.getElementById("boiler-eff").innerText =
-    `${data.boilerEfficiency.toFixed(1)}%`;
+    new Chart(document.getElementById('chillerChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Chiller Efficiency (%)',
+          data: data.chiller_efficiency || [],
+          borderWidth: 2
+        }]
+      }
+    });
 
-  document.getElementById("chiller-cop").innerText =
-    data.chillerCOP.toFixed(2);
+    document.getElementById("dailySavings").textContent =
+      data.daily_savings?.toFixed(2) || "0.00";
 
-  document.getElementById("daily-cost").innerText =
-    `$${data.dailyCost.toFixed(2)}`;
-
-  document.getElementById("dailySavings").innerText =
-    data.dailySavings.toFixed(2);
-
-  document.getElementById("monthlySavings").innerText =
-    data.monthlySavings.toFixed(2);
-
-  // ===== Charts =====
-  renderCharts(data);
-}
-
-function renderCharts(data) {
-  const labels = data.labels;
-
-  boilerChart = new Chart(document.getElementById("boilerChart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Boiler Efficiency (%)",
-        data: data.boilerTrend,
-        borderWidth: 2
-      }]
-    }
+    document.getElementById("monthlySavings").textContent =
+      data.monthly_savings_total?.toFixed(2) || "0.00";
+  })
+  .catch(err => {
+    console.error("Metrics fetch failed:", err);
   });
-
-  chillerChart = new Chart(document.getElementById("chillerChart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Chiller COP",
-        data: data.chillerTrend,
-        borderWidth: 2
-      }]
-    }
-  });
-
-  savingsChart = new Chart(document.getElementById("savingsChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Monthly Savings ($)",
-        data: data.monthlySavingsTrend
-      }]
-    }
-  });
-}
-
-loadDashboard();
