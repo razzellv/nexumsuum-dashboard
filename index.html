@@ -3,37 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nexum Suum Efficiency Dashboard</title>
+  <title>Nexum Suum – Facility Intelligence Dashboard</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <div class="container">
+
+    <!-- HEADER -->
     <header>
-      <h1>Nexum Suum Efficiency Dashboard</h1>
+      <h1>Nexum Suum™ Facility Intelligence</h1>
+      <p>Executive Performance Overview</p>
     </header>
 
+    <!-- KPI SUMMARY -->
+    <section class="kpis">
+      <div class="kpi">
+        <h3>Boiler Avg Efficiency</h3>
+        <span id="boiler-eff">--%</span>
+      </div>
+
+      <div class="kpi">
+        <h3>Chiller COP</h3>
+        <span id="chiller-cop">--</span>
+      </div>
+
+      <div class="kpi">
+        <h3>Daily Cost</h3>
+        <span id="daily-cost">$--</span>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
     <main>
+
       <section class="metric">
-        <h2>Boiler Efficiency</h2>
+        <h2>Boiler Efficiency Trend</h2>
         <canvas id="boilerChart"></canvas>
       </section>
 
       <section class="metric">
-        <h2>Chiller Efficiency</h2>
+        <h2>Chiller COP Trend</h2>
         <canvas id="chillerChart"></canvas>
       </section>
 
+      <section class="metric">
+        <h2>Monthly Savings Trend</h2>
+        <canvas id="savingsChart"></canvas>
+      </section>
+
+      <!-- SAVINGS SUMMARY -->
       <section class="summary">
-        <h2>Estimated Savings (Daily/Monthly)</h2>
+        <h2>Estimated Savings</h2>
         <div class="savings">
           <p><strong>Today:</strong> $<span id="dailySavings">0.00</span></p>
           <p><strong>This Month:</strong> $<span id="monthlySavings">0.00</span></p>
         </div>
       </section>
+
     </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <small>
+        Nexum Suum™ Facility Intelligence • Data-driven compliance & efficiency
+      </small>
+    </footer>
+
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+  <!-- MAIN SCRIPT (ES MODULE) -->
+  <script type="module" src="script.js"></script>
+
 </body>
 </html>
