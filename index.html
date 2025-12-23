@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nexum Suum – Facility Intelligence Dashboard</title>
+  <title>Nexum Suum™ Facility Intelligence</title>
 
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css"/>
 
   <!-- Chart.js -->
@@ -14,50 +13,25 @@
 
 <body>
   <div class="container">
-
-    <!-- HEADER -->
     <header>
       <h1>Nexum Suum™ Facility Intelligence</h1>
       <p>Executive Performance Overview</p>
     </header>
 
-    <!-- KPI SUMMARY -->
-    <section class="kpis">
-      <div class="kpi">
-        <h3>Boiler Avg Efficiency</h3>
-        <span id="boiler-eff">--%</span>
-      </div>
-
-      <div class="kpi">
-        <h3>Chiller COP</h3>
-        <span id="chiller-cop">--</span>
-      </div>
-
-      <div class="kpi">
-        <h3>Daily Cost</h3>
-        <span id="daily-cost">$--</span>
-      </div>
-    </section>
-
-    <!-- CHARTS -->
     <main>
-
+      <!-- BOILER -->
       <section class="metric">
-        <h2>Boiler Efficiency Trend</h2>
+        <h2>Boiler Avg Efficiency (%)</h2>
         <canvas id="boilerChart"></canvas>
       </section>
 
+      <!-- CHILLER -->
       <section class="metric">
-        <h2>Chiller COP Trend</h2>
+        <h2>Chiller COP</h2>
         <canvas id="chillerChart"></canvas>
       </section>
 
-      <section class="metric">
-        <h2>Monthly Savings Trend</h2>
-        <canvas id="savingsChart"></canvas>
-      </section>
-
-      <!-- SAVINGS SUMMARY -->
+      <!-- SAVINGS -->
       <section class="summary">
         <h2>Estimated Savings</h2>
         <div class="savings">
@@ -65,25 +39,19 @@
           <p><strong>This Month:</strong> $<span id="monthlySavings">0.00</span></p>
         </div>
       </section>
-
     </main>
 
-    <!-- FOOTER -->
     <footer>
       <small>
         Nexum Suum™ Facility Intelligence • Data-driven compliance & efficiency
       </small>
     </footer>
-
   </div>
 
-    </div>
-
-  <!-- CONFIG -->
+  <!-- CONFIG FIRST -->
   <script src="config.js"></script>
 
   <!-- DASHBOARD LOGIC -->
   <script src="script.js"></script>
-
 </body>
 </html>
