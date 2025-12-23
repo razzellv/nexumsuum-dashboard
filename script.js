@@ -1,70 +1,55 @@
-const API = window.NEXUM_CONFIG?.API_BASE_URL;
+(function () {
+  const API = window.NEXUM_CONFIG.API_BASE_URL;
 
-if (!API) {
-  alert("API_BASE_URL missing. config.js not loaded.");
-}
-
-/**
- * Helper to safely create a chart
- */
-function renderChart(canvasId, label, values, labels) {
-  const el = document.getElementById(canvasId);
-  if (!el) return;
-
-  new Chart(el, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label,
-        data: values,
-        borderWidth: 2,
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: true }
+  fetch(API + "/metrics")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("API request failed");
       }
-    }
-  });
-}
+      return response.json();
+    })
+    .then(data => {
+      const labels = data.labels || [];
 
-/**
- * Fetch metrics from backend
- */
-fetch(`${API}/metrics`)
-  .then(res => {
-    if (!res.ok) {
-      throw new Error(`API error ${res.status}`);
-    }
-    return res.json();
-  })
-  .then(data => {
-    const labels = data.labels || [];
+      // BOILER CHART
+      new Chart(document.getElementById("boilerChart"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Boiler Efficiency (%)",
+            data: data.boiler_efficiency || [],
+            borderColor: "#4bc0c0",
+            backgroundColor: "rgba(75,192,192,0.2)",
+            borderWidth: 2
+          }]
+        }
+      });
 
-    renderChart(
-      "boilerChart",
-      "Boiler Efficiency (%)",
-      data.boiler_efficiency || [],
-      labels
-    );
+      // CHILLER CHART
+      new Chart(document.getElementById("chillerChart"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Chiller COP",
+            data: data.chiller_efficiency || [],
+            borderColor: "#36a2eb",
+            backgroundColor: "rgba(54,162,235,0.2)",
+            borderWidth: 2
+          }]
+        }
+      });
 
-    renderChart(
-      "chillerChart",
-      "Chiller Efficiency (%)",
-      data.chiller_efficiency || [],
-      labels
-    );
+      // SAVINGS
+      document.getElementById("dailySavings").textContent =
+        (data.daily_savings || 0).toFixed(2);
 
-    document.getElementById("dailySavings").textContent =
-      (data.daily_savings ?? 0).toFixed(2);
-
-    document.getElementById("monthlySavings").textContent =
-      (data.monthly_savings_total ?? 0).toFixed(2);
-  })
-  .catch(err => {
-    alert("Metrics failed to load. Check API or auth.");
-    console.error(err);
-  });
+      document.getElementById("monthlySavings").textContent =
+        (data.monthly_savings_total || 0).toFixed(2);
+    })
+    .catch(err => {
+      alert("Metrics failed to load. Check API configuration.");
+      console.error(err);
+    });
+})();
