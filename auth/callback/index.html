@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Signing you in…</title>
+</head>
+<body>
+  <h3>Completing sign-in…</h3>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (!code) {
+      document.body.innerHTML = "<h3>No auth code found.</h3>";
+    } else {
+      // TEMP: store code (later replaced by Lambda exchange)
+      sessionStorage.setItem("auth_code", code);
+
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
+    }
+  </script>
+</body>
+</html>
